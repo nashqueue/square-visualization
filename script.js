@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function() {
     switchTab('visualize'); // Default to visualize tab
 });
@@ -29,23 +28,41 @@ fileInput.addEventListener('change', function(e) {
 
     function visualizeGrid(hashes) {
         const grid = document.getElementById('grid');
-        let totalShares = 0;
-        Object.values(hashes).forEach(shares => totalShares += shares);
-        const gridSize = Math.pow(2, Math.ceil(Math.log(Math.sqrt(totalShares))/Math.log(2))); // Adjust grid size based on total shares
+        grid.innerHTML = ''; // Clear existing grid
+        let totalCells = Object.values(hashes).reduce((acc, val) => acc + val, 0);
+        let gridSize = 2;
+        while (gridSize * gridSize < totalCells && gridSize <= 64) {
+            gridSize *= 2;
+        }
+        const gridSizePx = `${gridSize * 20}px`; // Example, assuming each cell is 20px
+        grid.style.width = gridSizePx;
+        grid.style.height = gridSizePx;
         grid.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
         grid.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
-        grid.innerHTML = ''; // Clear existing grid
     
-        Object.keys(hashes).forEach(hash => {
-            const shares = hashes[hash];
+        const colorList = document.getElementById('colorList'); // Assuming an element with id="colorList" exists
+        colorList.innerHTML = ''; // Clear existing list
+        Object.entries(hashes).forEach(([hash, numberOfCells]) => {
             const color = `#${hash.slice(-6)}`;
-            for (let i = 0; i < shares; i++) {
+            console.log(`Hash: ${hash}, Color: ${color}`); // Log each color to the console
+            for (let i = 0; i < numberOfCells; i++) {
                 const cell = document.createElement('div');
                 cell.style.backgroundColor = color;
                 cell.className = 'cell';
+                cell.style.width = '20px'; // Ensure cell has space
+                cell.style.height = '20px'; // Ensure cell has space
                 grid.appendChild(cell);
             }
+            // ... rest of your code for appending to colorList
         });
+        // After adding colored cells based on JSON data
+        const cellsNeeded = gridSize * gridSize - totalCells;
+        for (let i = 0; i < cellsNeeded; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.style.backgroundColor = '#CCCCCC'; // Default color for empty cells
+            grid.appendChild(cell);
+        }
     }
     
 
