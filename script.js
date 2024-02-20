@@ -71,7 +71,7 @@ const colorPicker = document.getElementById('colorPicker');
 const pixelCanvas = document.getElementById('pixelCanvas');
 const ctx = pixelCanvas.getContext('2d');
 const canvasSize = 256;
-const pixelSize = 16; // Determines the size of each "pixel" in the art
+const pixelSize = 4; // Adjust for 64x64 grid (256 / 64 = 4)
 const gridSize = canvasSize / pixelSize;
 
 // Initialize canvas with white pixels
@@ -82,7 +82,28 @@ colorPicker.addEventListener('change', (e) => {
     currentColor = e.target.value;
 });
 
-pixelCanvas.addEventListener('click', (e) => {
+let isMouseDown = false;
+
+pixelCanvas.addEventListener('mousedown', (e) => {
+    isMouseDown = true;
+    draw(e);
+});
+
+pixelCanvas.addEventListener('mousemove', (e) => {
+    if (isMouseDown) {
+        draw(e);
+    }
+});
+
+pixelCanvas.addEventListener('mouseup', () => {
+    isMouseDown = false;
+});
+
+pixelCanvas.addEventListener('mouseleave', () => {
+    isMouseDown = false;
+});
+
+function draw(e) {
     const rect = pixelCanvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -91,7 +112,7 @@ pixelCanvas.addEventListener('click', (e) => {
     
     ctx.fillStyle = currentColor;
     ctx.fillRect(gridX, gridY, pixelSize, pixelSize);
-});
+}
 
 document.getElementById('downloadJson').addEventListener('click', () => {
     const json = generateJsonFromCanvas();
@@ -99,13 +120,15 @@ document.getElementById('downloadJson').addEventListener('click', () => {
 });
 
 function generateJsonFromCanvas() {
-    const data = { hashes: {} };
+    const data = [];
+    let cellNumber = 1;
     for (let y = 0; y < gridSize; y++) {
         for (let x = 0; x < gridSize; x++) {
             const pixelData = ctx.getImageData(x * pixelSize, y * pixelSize, 1, 1).data;
             const hexColor = rgbToHex(pixelData[0], pixelData[1], pixelData[2]);
-            const hash = generateHash(x, y); // Simulate a hash for the purpose of this example
-            data.hashes[hash] = hexColor;
+            const hash = `${cellNumber}${hexColor}`;
+            data.push({ hash });
+            cellNumber++;
         }
     }
     return JSON.stringify(data);
@@ -134,4 +157,14 @@ function generateHash(x, y) {
 function setCurrentColor(color) {
     currentColor = color;
     colorPicker.value = color;
+}
+
+function requestApi() {
+    const height = document.getElementById('heightInput').value;
+    fetch(`https://example.com/api/data?height=${height}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data); // Handle the JSON data
+        })
+        .catch(error => console.error('Error:', error));
 }

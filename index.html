@@ -17,6 +17,7 @@
     <div>
         <button onclick="switchTab('visualize')">Visualize</button>
         <button onclick="switchTab('draw')">Draw</button>
+        <button onclick="switchTab('api')">API Request</button>
     </div>
     <div id="visualize" class="tab">
         <input type="file" id="fileInput" accept=".json">
@@ -33,6 +34,11 @@
         <input type="color" id="colorPicker" value="#000000">
         <canvas id="pixelCanvas" width="256" height="256" style="border:1px solid black;"></canvas>
         <button id="downloadJson">Download JSON</button>
+    </div>
+    <div id="api" class="tab">
+        <label for="heightInput">Height:</label>
+        <input type="number" id="heightInput">
+        <button onclick="requestApi()">Request</button>
     </div>
     
     <script src="script.js"></script>
