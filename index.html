@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Art & Visualization</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .tab { display: none; padding: 20px; }
+        #grid { display: grid; border: 1px solid black; }
+        .cell { border: 1px solid black; }
+        input, button { margin: 10px 0; }
+        #pixelCanvas { cursor: crosshair; }
+    </style>
+</head>
+<body>
+    <div>
+        <button onclick="switchTab('visualize')">Visualize</button>
+        <button onclick="switchTab('draw')">Draw</button>
+    </div>
+    <div id="visualize" class="tab">
+        <input type="file" id="fileInput" accept=".json">
+        <div id="grid"></div>
+    </div>
+    <div id="draw" class="tab">
+        <div id="colorOptions">
+            <button class="colorButton" style="background-color: #FF0000;" onclick="setCurrentColor('#FF0000')"></button>
+            <button class="colorButton" style="background-color: #00FF00;" onclick="setCurrentColor('#00FF00')"></button>
+            <button class="colorButton" style="background-color: #0000FF;" onclick="setCurrentColor('#0000FF')"></button>
+            <!-- Add more colors as needed -->
+        </div>
+        <input type="color" id="colorPicker" value="#000000">
+        <canvas id="pixelCanvas" width="256" height="256" style="border:1px solid black;"></canvas>
+        <button id="downloadJson">Download JSON</button>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
+    
